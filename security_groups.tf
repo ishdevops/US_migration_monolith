@@ -98,5 +98,29 @@ resource "aws_security_group" "WindowsRDP" {
   }
 }
 
+resource "aws_security_group" "JumpboxSG" {
+  name        = "mono_Jump_Box"
+  description = "Allow RDP"
+  vpc_id      = aws_vpc.vpc_dev.id 
+
+  ingress {
+    description = "Allow RDP"
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = ["18.130.69.215/32", "3.9.29.117/32"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "mono_Jump_Box"
+  }
+}
 
 
