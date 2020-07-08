@@ -98,6 +98,7 @@ resource "aws_security_group" "WindowsRDP" {
   }
 }
 
+<<<<<<< HEAD
 resource "aws_security_group" "JumpboxSG" {
   name        = "mono_Jump_Box"
   description = "Allow RDP"
@@ -122,5 +123,7 @@ resource "aws_security_group" "JumpboxSG" {
     Name = "mono_Jump_Box"
   }
 }
+=======
+>>>>>>> d70ff6add601cb258a95712e21ae288798d71aa2
 
 
