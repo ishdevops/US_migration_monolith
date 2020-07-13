@@ -12,6 +12,7 @@ resource "aws_lb" "US_monoprod" {
     Environment = "production"
   }
 }
+
 resource "aws_lb_listener" "HTTP" {
   load_balancer_arn = aws_lb.US_monoprod.arn
   port              = "80"
@@ -27,6 +28,7 @@ resource "aws_lb_listener" "HTTP" {
     }
   }
 }
+
 resource "aws_lb_listener" "HTTPS" {
   load_balancer_arn = aws_lb.US_monoprod.arn
   port              = "443"
@@ -39,13 +41,20 @@ resource "aws_lb_listener" "HTTPS" {
     target_group_arn = "aws_lb_target_group.Monolaunch-TG.arn"
   }
 }
+
 resource "aws_lb_target_group" "Monolaunch-TG" {
   name     = "tf-example-lb-tg"
   port     = 443
   protocol = "HTTPS"
   vpc_id   = aws_vpc.vpc_dev.id
-}
 
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+  health_check {
+    path = "/"
+    port = 80
+    healthy_threshold = 5
+    unhealthy_threshold = 2
+    timeout = 5
+    interval = 10
+    matcher = "200-302"
+  }
 }
