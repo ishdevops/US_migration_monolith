@@ -123,4 +123,27 @@ resource "aws_security_group" "JumpboxSG" {
   }
 }
 
+resource "aws_security_group" "Mono_Instances" {
+  name        = "Monolaunch_Instance_SG"
+  description = "Access to Monolaunch Instances"
+  vpc_id      = aws_vpc.vpc_dev.id 
 
+  ingress {
+    description = "Allow All Traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [aws_vpc.vpc_dev.cidr_block]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Monoolaunch_SG"
+  }
+}
