@@ -43,7 +43,7 @@ resource "aws_lb_listener" "HTTPS" {
 }
 
 resource "aws_lb_target_group" "Monolaunch-TG" {
-  name     = "tf-example-lb-tg"
+  name     = "Monoprod-TG"
   port     = 443
   protocol = "HTTPS"
   vpc_id   = aws_vpc.vpc_dev.id
@@ -58,3 +58,4 @@ resource "aws_lb_target_group" "Monolaunch-TG" {
     matcher = "200-302"
   }
 }
+
