@@ -147,3 +147,53 @@ resource "aws_security_group" "Mono_Instances" {
     Name = "Monoolaunch_SG"
   }
 }
+
+resource "aws_security_group" "Mono_Swarm_Node" {
+  name        = "Swarm_Node_SG"
+  description = "Security group for swarm node access"
+  vpc_id      = aws_vpc.vpc_dev.id 
+
+  ingress {
+    description = "Allow All Traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [aws_vpc.vpc_dev.cidr_block]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Swarm_Node_SG"
+  }
+}
+
+resource "aws_security_group" "Mono_Swarm_Internal_LB" {
+  name        = "Swarm_Internal_LB_SG"
+  description = "Security group for swarm node access"
+  vpc_id      = aws_vpc.vpc_dev.id 
+
+  ingress {
+    description = "Allow All Traffic"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.vpc_dev.cidr_block]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Swarm_Internal_LB_SG"
+  }
+}
