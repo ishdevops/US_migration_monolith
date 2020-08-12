@@ -11,7 +11,7 @@ resource "aws_vpc" "vpc_dev" {
 # adding public subnet Zone A
 resource "aws_subnet" "public_subnet_mgt_a" {
   vpc_id                  = aws_vpc.vpc_dev.id
-  cidr_block              = "10.1.30.0/24"
+  cidr_block              = "10.0.10.0/24"
   map_public_ip_on_launch = true
   availability_zone       = "us-east-1a"
 
@@ -23,7 +23,7 @@ resource "aws_subnet" "public_subnet_mgt_a" {
  # adding public subnet Zone B
  resource "aws_subnet" "public_subnet_b" {
    vpc_id                  = aws_vpc.vpc_dev.id
-   cidr_block              = "10.1.31.0/24"
+   cidr_block              = "10.0.20.0/24"
    map_public_ip_on_launch = true
    availability_zone       = "us-east-1b"
 
@@ -47,7 +47,7 @@ resource "aws_subnet" "public_subnet_mgt_a" {
 # adding private subnet Zone A
 resource "aws_subnet" "private_subnet_a" {
   vpc_id                  = aws_vpc.vpc_dev.id
-  cidr_block              = "10.1.101.0/24"
+  cidr_block              = "10.0.30.0/24"
   availability_zone       = "us-east-1a"
 
   tags = {
@@ -58,7 +58,7 @@ resource "aws_subnet" "private_subnet_a" {
 # adding private subnet Zone B
 resource "aws_subnet" "private_subnet_b" {
   vpc_id                  = aws_vpc.vpc_dev.id
-  cidr_block              = "10.1.102.0/24"
+  cidr_block              = "10.0.40.0/24"
   availability_zone       = "us-east-1b"
 
   tags = {
@@ -69,7 +69,7 @@ resource "aws_subnet" "private_subnet_b" {
 # adding private subnet Zone C
  resource "aws_subnet" "private_subnet_c" {
    vpc_id                  = aws_vpc.vpc_dev.id
-   cidr_block              = "10.1.103.0/24"
+   cidr_block              = "10.0.50.0/24"
    availability_zone       = "us-east-1c"
 
    tags = {
