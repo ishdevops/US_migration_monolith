@@ -144,7 +144,7 @@ resource "aws_security_group" "Mono_Instances" {
   }
 
   tags = {
-    Name = "Monoolaunch_SG"
+    Name = "Monolaunch_SG"
   }
 }
 
