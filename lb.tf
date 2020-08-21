@@ -63,7 +63,7 @@ resource "aws_lb" "Swarm-Internal-LB" {
   name               = "Swarm-Internal-LB"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.Mono_Swarm_Node_SG.id, aws_security_group.Mono_Swarm_Internal_LB.id]
+  security_groups    = [aws_security_group.Mono_Swarm_Node.id, aws_security_group.Mono_Swarm_Internal_LB.id]
   subnets            = [aws_subnet.public_subnet_b.id, aws_subnet.public_subnet_mgt_a.id]
 
   enable_deletion_protection = true
