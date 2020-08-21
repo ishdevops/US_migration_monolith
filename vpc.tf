@@ -108,7 +108,7 @@ resource "aws_route_table" "vpc_dev_route_table" {
 
 # Associate the Route Table with the Subnet
 resource "aws_route_table_association" "dev_vpc_association" {
-  gateway_id = aws_internet_gateway.internet_gateway.id
+  subnet_id = aws_subnet.public_subnet_b.id
   route_table_id = aws_route_table.vpc_dev_route_table.id
 }
 
@@ -151,6 +151,12 @@ resource "aws_route" "nat-route" {
         aws_route_table.nat-routetable
     ]
 }
+
+resource "aws_route_table_association" "nat-routetable" {
+  subnet_id = aws_subnet.private_subnet_a.id
+  route_table_id = aws_route_table.nat-routetable.id
+}
+
 
 # #adding private route table to nat
 #  resource "aws_route" "vpc_dev_private_route" {
