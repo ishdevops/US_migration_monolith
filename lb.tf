@@ -3,7 +3,7 @@ resource "aws_lb" "Monoprod" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.allow443.id, aws_security_group.allow80.id, aws_security_group.Mono_Instances.id]
-  subnets            = [aws_subnet.public.public_subnet_b.id, aws_subnet.public.public_subnet_mgt_a.id]
+  subnets            = [aws_subnet.public_subnet_b.id, aws_subnet.public_subnet_mgt_a.id]
 
   enable_deletion_protection = true
 
