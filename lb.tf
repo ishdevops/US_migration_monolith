@@ -34,7 +34,7 @@ resource "aws_lb_listener" "HTTPS" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-  certificate_arn   = "arn:aws:acm:eu-west-2:221124075124:certificate/3bfb830a-6c27-43cb-b5ba-0ba84d48285c"
+  certificate_arn   = data.aws_acm_certificate.salary_finance.arn
 
   default_action {
     type             = "forward"
@@ -79,7 +79,7 @@ resource "aws_lb_listener" "HTTPS_Swarm" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-  certificate_arn   = "arn:aws:acm:eu-west-2:221124075124:certificate/3bfb830a-6c27-43cb-b5ba-0ba84d48285c"
+  certificate_arn   = data.aws_acm_certificate.salary_finance.arn
 
   default_action {
     type             = "forward"

@@ -1,3 +1,7 @@
+data "aws_acm_certificate" "salary_finance" {
+  domain = "salaryfinance.com"
+}
+
 resource "aws_vpc" "vpc_dev" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
@@ -98,7 +102,7 @@ resource "aws_route_table" "vpc_dev_route_table" {
  # create external route to IGW
  resource "aws_route" "vpc_dev_route" {
    route_table_id         = aws_route_table.vpc_dev_route_table.id 
-   destination_cidr_block = "0.0.0.0/0"
+  //  destination_cidr_block = "0.0.0.0/0"
    gateway_id             = aws_internet_gateway.internet_gateway.id
  }
 
@@ -125,7 +129,7 @@ resource "aws_eip" "elastic_ip" {
 
 resource "aws_subnet" "nat-subnet" {
     vpc_id = aws_vpc.vpc_dev.id
-    cidr_block = "10.1.32.0/24"
+    cidr_block = "10.0.60.0/24"
     
     tags = {
         Name = "nat-subnet"
@@ -141,7 +145,7 @@ resource "aws_route_table" "nat-routetable" {
 
 resource "aws_route" "nat-route" {
     route_table_id = aws_route_table.nat-routetable.id
-    destination_cidr_block = "0.0.0.0/0"
+    // destination_cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.internet_gateway.id
     depends_on = [
         aws_route_table.nat-routetable
