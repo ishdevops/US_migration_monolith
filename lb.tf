@@ -38,7 +38,7 @@ resource "aws_lb_listener" "HTTPS" {
 
   default_action {
     type             = "forward"
-    target_group_arn = "aws_lb_target_group.Monolaunch-TG.arn"
+    target_group_arn = aws_lb_target_group.Monolaunch-TG.arn
   }
 }
 
@@ -63,7 +63,7 @@ resource "aws_lb" "Swarm-Internal-LB" {
   name               = "Swarm-Internal-LB"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["aws_security_group.Mono_Swarm_Node_SG.id", "aws_security_group.Mono_Swarm_Internal_LB_SG.id"]
+  security_groups    = [aws_security_group.Mono_Swarm_Node_SG.id, "aws_security_group.Mono_Swarm_Internal_LB_SG.id"]
   subnets            = ["aws_subnet.public.*.id"]
 
   enable_deletion_protection = true
@@ -83,7 +83,7 @@ resource "aws_lb_listener" "HTTPS_Swarm" {
 
   default_action {
     type             = "forward"
-    target_group_arn = "aws_lb_target_group.Swarm_Internal_TG.arn"
+    target_group_arn = aws_lb_target_group.Swarm_Internal_TG.arn
   }
 }
 
