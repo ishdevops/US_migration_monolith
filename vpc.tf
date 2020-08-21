@@ -1,5 +1,5 @@
 data "aws_acm_certificate" "salary_finance" {
-  domain = "salaryfinance.com"
+  domain = "*.salaryfinance.com"
 }
 
 resource "aws_vpc" "vpc_dev" {
