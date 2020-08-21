@@ -100,11 +100,11 @@ resource "aws_route_table" "vpc_dev_route_table" {
 }
 
  # create external route to IGW
- resource "aws_route" "vpc_dev_route" {
-   route_table_id         = aws_route_table.vpc_dev_route_table.id 
-   destination_cidr_block = "0.0.0.0/0"
-   gateway_id             = aws_internet_gateway.internet_gateway.id
- }
+//  resource "aws_route" "vpc_dev_route" {
+//    route_table_id         = aws_route_table.vpc_dev_route_table.id 
+//    destination_cidr_block = "0.0.0.0/0"
+//    gateway_id             = aws_internet_gateway.internet_gateway.id
+//  }
 
 # Associate the Route Table with the Subnet
 resource "aws_route_table_association" "dev_vpc_association" {
@@ -143,14 +143,14 @@ resource "aws_route_table" "nat-routetable" {
     }
 }
 
-resource "aws_route" "nat-route" {
-    route_table_id = aws_route_table.nat-routetable.id
-    destination_cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat.id
-    depends_on = [
-        aws_route_table.nat-routetable
-    ]
-}
+// resource "aws_route" "nat-route" {
+//     route_table_id = aws_route_table.nat-routetable.id
+//     destination_cidr_block = "0.0.0.0/0"
+//     nat_gateway_id = aws_nat_gateway.nat.id
+//     depends_on = [
+//         aws_route_table.nat-routetable
+//     ]
+// }
 
 # #adding private route table to nat
 #  resource "aws_route" "vpc_dev_private_route" {
