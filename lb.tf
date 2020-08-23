@@ -3,11 +3,11 @@ data "aws_acm_certificate" "salary_finance" {
 }
 
 resource "aws_lb" "monoprod_lb" {
-  name               = "monoprod_lb"
+  name               = "monoprod-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.allow_https.id, aws_security_group.allow_http.id, aws_security_group.monolaunch_instance_sg.id]
-  subnets            = [aws_subnet.public_subnet_b.id, aws_subnet.public_subnet_mgt_a.id]
+  subnets            = [aws_subnet.public_subnet_b.id, aws_subnet.public_subnet_a.id]
 
   enable_deletion_protection = true
 }
@@ -42,7 +42,7 @@ resource "aws_lb_listener" "https" {
 }
 
 resource "aws_lb_target_group" "monoprod_tg" {
-  name     = "monoprod_tg"
+  name     = "monoprod-tg"
   port     = 443
   protocol = "HTTPS"
   vpc_id   = aws_vpc.vpc_dev.id
@@ -59,18 +59,14 @@ resource "aws_lb_target_group" "monoprod_tg" {
 }
 
 resource "aws_lb" "swarm_internal_lb" {
-  name               = "swarm_internal_lb"
+  name               = "swarm-internal-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.swarm_node_sg.id, aws_security_group.swarm_internal_lb_sg.id]
-  subnets            = [aws_subnet.public_subnet_b.id, aws_subnet.public_subnet_mgt_a.id]
+  subnets            = [aws_subnet.public_subnet_b.id, aws_subnet.public_subnet_a.id]
 
   enable_deletion_protection = true
 
-
-  tags = {
-    Environment = "production"
-  }
 }
 
 resource "aws_lb_listener" "https_swarm" {
@@ -87,7 +83,7 @@ resource "aws_lb_listener" "https_swarm" {
 }
 
 resource "aws_lb_target_group" "swarm_internal_tg" {
-  name     = "swarm_internal_tg"
+  name     = "swarm-internal-tg"
   port     = 443
   protocol = "HTTPS"
   vpc_id   = aws_vpc.vpc_dev.id
