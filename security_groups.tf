@@ -1,5 +1,5 @@
-resource "aws_security_group" "allow443" {
-  name        = "mono_https_public"
+resource "aws_security_group" "allow_https" {
+  name        = "allow_https"
   description = "Allow HTTPS inbound traffic"
   vpc_id      = aws_vpc.vpc_dev.id 
 
@@ -19,12 +19,12 @@ resource "aws_security_group" "allow443" {
   }
 
   tags = { 
-    Name = "mono_https_public"
+    Name = "allow_https"
   }
 }
 
-resource "aws_security_group" "allow80" {
-  name        = "mono_http_public"
+resource "aws_security_group" "allow_http" {
+  name        = "allow_http"
   description = "Allow HTTP inbound traffic"
   vpc_id      = aws_vpc.vpc_dev.id 
 
@@ -44,17 +44,17 @@ resource "aws_security_group" "allow80" {
   }
 
   tags = {
-    Name = "mono_http_public"
+    Name = "allow_http"
   }
 }
 
-resource "aws_security_group" "SQLServerSG" {
-  name        = "mono_sql_server"
+resource "aws_security_group" "sql_server_sg" {
+  name        = "sql_server_sg"
   description = "Allow SQL Server"
   vpc_id      = aws_vpc.vpc_dev.id 
 
   ingress {
-    description = "HTTP from VPC"
+    description = "SQL Server access"
     from_port   = 1433
     to_port     = 1433
     protocol    = "tcp"
@@ -69,12 +69,12 @@ resource "aws_security_group" "SQLServerSG" {
   }
 
   tags = {
-    Name = "mono_sql_server"
+    Name = "sql_server_sg"
   }
 }
 
-resource "aws_security_group" "WindowsRDP" {
-  name        = "mono_rdp"
+resource "aws_security_group" "windows_rpd" {
+  name        = "windows_rdp"
   description = "Allow RDP"
   vpc_id      = aws_vpc.vpc_dev.id 
 
@@ -94,13 +94,13 @@ resource "aws_security_group" "WindowsRDP" {
   }
 
   tags = {
-    Name = "mono_rdp"
+    Name = "windows_rdp"
   }
 }
 
-resource "aws_security_group" "JumpboxSG" {
-  name        = "Mono_Jump_Box"
-  description = "Allow RDP"
+resource "aws_security_group" "jumpbox_sg" {
+  name        = "jumpbox_sg"
+  description = "Access for Jumpbox"
   vpc_id      = aws_vpc.vpc_dev.id 
 
   ingress {
@@ -119,12 +119,12 @@ resource "aws_security_group" "JumpboxSG" {
   }
 
   tags = {
-    Name = "Mono_Jump_Box"
+    Name = "jumpbox_sg"
   }
 }
 
-resource "aws_security_group" "Mono_Instances" {
-  name        = "Monolaunch_Instance_SG"
+resource "aws_security_group" "monolaunch_instance_sg" {
+  name        = "monolaunch_instance_sg"
   description = "Access to Monolaunch Instances"
   vpc_id      = aws_vpc.vpc_dev.id 
 
@@ -144,12 +144,12 @@ resource "aws_security_group" "Mono_Instances" {
   }
 
   tags = {
-    Name = "Monolaunch_SG"
+    Name = "monolaunch_instance_sg"
   }
 }
 
-resource "aws_security_group" "Mono_Swarm_Node" {
-  name        = "Swarm_Node_SG"
+resource "aws_security_group" "swarm_node_sg" {
+  name        = "swarm_node_sg"
   description = "Security group for swarm node access"
   vpc_id      = aws_vpc.vpc_dev.id 
 
@@ -169,12 +169,12 @@ resource "aws_security_group" "Mono_Swarm_Node" {
   }
 
   tags = {
-    Name = "Swarm_Node_SG"
+    Name = "swarm_node_sg"
   }
 }
 
-resource "aws_security_group" "Mono_Swarm_Internal_LB" {
-  name        = "Swarm_Internal_LB_SG"
+resource "aws_security_group" "swarm_internal_lb_sg" {
+  name        = "swarm_internal_lb_sg"
   description = "Security group for swarm node access"
   vpc_id      = aws_vpc.vpc_dev.id 
 
@@ -194,6 +194,6 @@ resource "aws_security_group" "Mono_Swarm_Internal_LB" {
   }
 
   tags = {
-    Name = "Swarm_Internal_LB_SG"
+    Name = "swarm_internal_lb_sg"
   }
 }

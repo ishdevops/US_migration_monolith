@@ -8,19 +8,19 @@ resource "aws_vpc" "vpc_dev" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "US Dev VPC"
+    Name = "vpc_dev"
   }
 }
 
 # adding public subnet Zone A
-resource "aws_subnet" "public_subnet_mgt_a" {
+resource "aws_subnet" "public_subnet__a" {
   vpc_id                  = aws_vpc.vpc_dev.id
   cidr_block              = "10.0.10.0/24"
   map_public_ip_on_launch = true
   availability_zone       = "us-east-1a"
 
   tags = {
-    Name = "Public Subnet managment a"
+    Name = "public_subnet__a"
   }
 }
 
@@ -32,21 +32,9 @@ resource "aws_subnet" "public_subnet_mgt_a" {
    availability_zone       = "us-east-1b"
 
    tags = {
-     Name = "Public Subnet B"
+     Name = "public_subnet_b"
    }
  }
-
-# # adding public subnet Zone C
-#  resource "aws_subnet" "public_subnet_c" {
-#    vpc_id                  = aws_vpc.vpc_dev.id
-#    cidr_block              = "10.1.32.0/24"
-#    map_public_ip_on_launch = true
-#    availability_zone       = "us-east-1c"
-
-#    tags = {
-#      name = "public subnet c"
-#    }
-# }
 
 # adding private subnet Zone A
 resource "aws_subnet" "private_subnet_a" {
@@ -55,7 +43,7 @@ resource "aws_subnet" "private_subnet_a" {
   availability_zone       = "us-east-1a"
 
   tags = {
-    Name = "Private Subnet A"
+    Name = "private_subnet_a"
   }
 }
 
@@ -66,53 +54,57 @@ resource "aws_subnet" "private_subnet_b" {
   availability_zone       = "us-east-1b"
 
   tags = {
-    Name = "Private Subnet Management B"
+    Name = "private_subnet_b"
   }
 }
 
-# adding private subnet Zone C
- resource "aws_subnet" "private_subnet_c" {
-   vpc_id                  = aws_vpc.vpc_dev.id
-   cidr_block              = "10.0.50.0/24"
-   availability_zone       = "us-east-1c"
+# creating public route table
+resource "aws_route_table" "public_route_table" {
+  vpc_id = aws_vpc.vpc_dev.id
 
-   tags = {
-     Name = "Private Subnet Management C"
-   }
- }
+  tags = {
+    Name      = "public_route_table"
+  }
+}
+
+# Associate the Public Route Table with the Subnet
+resource "aws_route_table_association" "public_route_association" {
+  subnet_id = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet__b.id]
+  route_table_id = aws_route_table.public_route_table.id
+}
+
+# creating private route table
+resource "aws_route_table" "private_route_table" {
+    vpc_id = aws_vpc.vpc_dev.id
+    
+    tags = {
+        Name = "private_route_table"
+    }
+}
+
+# Associate the Public Route Table with the Subnet
+resource "aws_route_table_association" "private_route_association" {
+  subnet_id = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
+  route_table_id = aws_route_table.private_route_table.id
+}
 
 # adding internet gateway for external communication
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc_dev.id
 
   tags = {
-    Name      = "Internet Gateway"
-  }
-}
-
-# creating public route table
-resource "aws_route_table" "vpc_dev_route_table" {
-  vpc_id = aws_vpc.vpc_dev.id
-
-  tags = {
-    Name      = "Public Subnet Route Table"
+    Name      = "internet_gateway"
   }
 }
 
  # create external route to IGW
- resource "aws_route" "vpc_dev_route" {
-   route_table_id         = aws_route_table.vpc_dev_route_table.id 
+ resource "aws_route" "public_route" {
+   route_table_id         = aws_route_table.public_route_table.id 
    destination_cidr_block = "0.0.0.0/0"
    gateway_id             = aws_internet_gateway.internet_gateway.id
  }
 
-# Associate the Route Table with the Subnet
-resource "aws_route_table_association" "dev_vpc_association" {
-  subnet_id = aws_subnet.public_subnet_b.id
-  route_table_id = aws_route_table.vpc_dev_route_table.id
-}
-
-# adding an elastic ip
+# adding an elastic ip for Nat
 resource "aws_eip" "elastic_ip" {
   vpc = true
   depends_on = [aws_internet_gateway.internet_gateway]
@@ -122,29 +114,13 @@ resource "aws_eip" "elastic_ip" {
  resource "aws_nat_gateway" "nat" {
    allocation_id = aws_eip.elastic_ip.id 
   # vpc_id = aws_vpc.vpc_dev.id
-   subnet_id     = aws_subnet.public_subnet_b.id
+   subnet_id     = aws_subnet.public_subnet_a.id
    depends_on    = [aws_internet_gateway.internet_gateway]
  }
 
-
-resource "aws_subnet" "nat-subnet" {
-    vpc_id = aws_vpc.vpc_dev.id
-    cidr_block = "10.0.60.0/24"
-    
-    tags = {
-        Name = "nat-subnet"
-    }
-}
-resource "aws_route_table" "nat-routetable" {
-    vpc_id = aws_vpc.vpc_dev.id
-    
-    tags = {
-        Name = "nat-routetable"
-    }
-}
-
+#route for Nat-Gateway
 resource "aws_route" "nat-route" {
-    route_table_id = aws_route_table.nat-routetable.id
+    route_table_id = aws_route_table.public_route_table.id
     destination_cidr_block = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat.id
     depends_on = [
@@ -152,10 +128,7 @@ resource "aws_route" "nat-route" {
     ]
 }
 
-resource "aws_route_table_association" "nat-routetable" {
-  subnet_id = aws_subnet.private_subnet_a.id
-  route_table_id = aws_route_table.nat-routetable.id
-}
+
 
 
 # #adding private route table to nat
