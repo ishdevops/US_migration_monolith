@@ -63,9 +63,15 @@ resource "aws_route_table" "public_route_table" {
   }
 }
 
-# Associate the Public Route Table with the Subnet
-resource "aws_route_table_association" "public_route_association" {
-  subnet_id = ["aws_subnet.public_subnet_a.id", "aws_subnet.public_subnet_b.id"]
+# Associate the Public Route Table with the Public Subnet A
+resource "aws_route_table_association" "public_route_association_a" {
+  subnet_id = aws_subnet.public_subnet_a.id
+  route_table_id = aws_route_table.public_route_table.id
+}
+
+# Associate the Public Route Table with the Public Subnet B
+resource "aws_route_table_association" "public_route_association_b" {
+  subnet_id = aws_subnet.public_subnet_b.id
   route_table_id = aws_route_table.public_route_table.id
 }
 
@@ -78,9 +84,15 @@ resource "aws_route_table" "private_route_table" {
     }
 }
 
-# Associate the Private Route Table with the Subnet
-resource "aws_route_table_association" "private_route_association" {
-  subnet_id = [aws_subnet.private_subnet_a.id, aws_subnet.private_subnet_b.id]
+# Associate the Private Route Table with the Private Subnet A
+resource "aws_route_table_association" "private_route_association_a" {
+  subnet_id = aws_subnet.private_subnet_a.id
+  route_table_id = aws_route_table.private_route_table.id
+}
+
+# Associate the Private Route Table with the Private Subnet B
+resource "aws_route_table_association" "private_route_association_b" {
+  subnet_id = aws_subnet.private_subnet_b.id
   route_table_id = aws_route_table.private_route_table.id
 }
 
