@@ -115,8 +115,7 @@ resource "aws_internet_gateway" "internet_gateway" {
 # adding an elastic ip for Nat
 resource "aws_eip" "elastic_ip" {
   vpc = true
-  //depends_on = [aws_nat_gateway.internet_gateway]
- }
+}
 
 #creating the nat gateway
  resource "aws_nat_gateway" "nat_gw" {
@@ -129,11 +128,11 @@ resource "aws_eip" "elastic_ip" {
 
 #route for Nat-Gateway
 resource "aws_route" "nat_route" {
-    route_table_id         = aws_route_table.public_route_table.id
+    route_table_id         = aws_route_table.private_route_table.id
     destination_cidr_block = "0.0.0.0/0"
     gateway_id             = aws_nat_gateway.nat_gw.id
     depends_on = [
-      aws_route_table.public_route_table,
+      aws_route_table.private_route_table,
     ]
 }
 
