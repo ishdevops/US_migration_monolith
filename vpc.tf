@@ -132,7 +132,8 @@ resource "aws_route" "nat_route" {
     destination_cidr_block = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat.id
     depends_on = [
-        aws_route_table.public_route_table
+        aws_route_table.public_route_table,
+        aws_internet_gateway.internet_gateway
     ]
 }
 
