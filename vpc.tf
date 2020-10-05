@@ -121,28 +121,19 @@ resource "aws_eip" "elastic_ip" {
 #creating the nat gateway
  resource "aws_nat_gateway" "nat" {
    allocation_id = aws_eip.elastic_ip.id 
-  # vpc_id = aws_vpc.vpc_dev.id
    subnet_id     = aws_subnet.public_subnet_a.id
    depends_on    = [aws_internet_gateway.internet_gateway]
  }
 
 #route for Nat-Gateway
-resource "aws_route" "nat_route" {
-    route_table_id = aws_route_table.public_route_table.id
+resource "aws_route" "public_route" {
+    route_table_id         = aws_route_table.public_route_table.id
     destination_cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat.id
+    gateway_id             = aws_internet_gateway.internet_gateway.id
+    nat_gateway_id         = aws_nat_gateway.nat.id
     depends_on = [
         aws_route_table.public_route_table,
         aws_internet_gateway.internet_gateway
     ]
 }
-
-
-
-# #adding private route table to nat
-#  resource "aws_route" "vpc_dev_private_route" {
-#    route_table_id         = aws_route_table.vpc_dev_private_route_table.id
-#    destination_cidr_block = "0.0.0.0/0"
-#    nat_gateway_id         = aws_nat_gateway.nat.id
-#  }
 
