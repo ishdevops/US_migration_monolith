@@ -1,5 +1,5 @@
 data "aws_acm_certificate" "salary_finance" {
-  domain = "salaryfinance.club"
+  domain = "*.salaryfinance.club"
 }
 
 resource "aws_lb" "monoprod_lb" {
