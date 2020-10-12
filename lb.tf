@@ -45,7 +45,7 @@ resource "aws_lb_target_group" "monoprod_tg" {
   name     = "monoprod-tg"
   port     = 443
   protocol = "HTTPS"
-  vpc_id   = aws_vpc.vpc_dev.id
+  vpc_id   = aws_vpc.vpc_prod_us.id
 
   health_check {
     path = "/"
@@ -86,7 +86,7 @@ resource "aws_lb_target_group" "swarm_internal_tg" {
   name     = "swarm-internal-tg"
   port     = 443
   protocol = "HTTPS"
-  vpc_id   = aws_vpc.vpc_dev.id
+  vpc_id   = aws_vpc.vpc_prod_us.id
 
   health_check {
     path = "/"

@@ -1,16 +1,16 @@
-resource "aws_vpc" "vpc_dev" {
+resource "aws_vpc" "vpc_prod_us" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
 
   tags = {
-    Name = "vpc_dev"
+    Name = "vpc_prod_us"
   }
 }
 
 # adding public subnet Zone A
 resource "aws_subnet" "public_subnet_a" {
-  vpc_id                  = aws_vpc.vpc_dev.id
+  vpc_id                  = aws_vpc.vpc_prod_us.id
   cidr_block              = "10.0.10.0/24"
   map_public_ip_on_launch = true
   availability_zone       = "us-east-1a"
@@ -22,7 +22,7 @@ resource "aws_subnet" "public_subnet_a" {
 
  # adding public subnet Zone B
  resource "aws_subnet" "public_subnet_b" {
-   vpc_id                  = aws_vpc.vpc_dev.id
+   vpc_id                  = aws_vpc.vpc_prod_us.id
    cidr_block              = "10.0.20.0/24"
    map_public_ip_on_launch = true
    availability_zone       = "us-east-1b"
@@ -34,7 +34,7 @@ resource "aws_subnet" "public_subnet_a" {
 
 # adding private subnet Zone A
 resource "aws_subnet" "private_subnet_a" {
-  vpc_id                  = aws_vpc.vpc_dev.id
+  vpc_id                  = aws_vpc.vpc_prod_us.id
   cidr_block              = "10.0.30.0/24"
   availability_zone       = "us-east-1a"
 
@@ -45,7 +45,7 @@ resource "aws_subnet" "private_subnet_a" {
 
 # adding private subnet Zone B
 resource "aws_subnet" "private_subnet_b" {
-  vpc_id                  = aws_vpc.vpc_dev.id
+  vpc_id                  = aws_vpc.vpc_prod_us.id
   cidr_block              = "10.0.40.0/24"
   availability_zone       = "us-east-1b"
 
@@ -56,7 +56,7 @@ resource "aws_subnet" "private_subnet_b" {
 
 # creating public route table
 resource "aws_route_table" "public_route_table" {
-  vpc_id = aws_vpc.vpc_dev.id
+  vpc_id = aws_vpc.vpc_prod_us.id
 
   tags = {
     Name      = "public_route_table"
@@ -77,7 +77,7 @@ resource "aws_route_table_association" "public_route_association_b" {
 
 # creating private route table
 resource "aws_route_table" "private_route_table" {
-    vpc_id = aws_vpc.vpc_dev.id
+    vpc_id = aws_vpc.vpc_prod_us.id
     
     tags = {
         Name = "private_route_table"
@@ -98,7 +98,7 @@ resource "aws_route_table_association" "private_route_association_b" {
 
 # adding internet gateway for external communication
 resource "aws_internet_gateway" "internet_gateway" {
-  vpc_id = aws_vpc.vpc_dev.id
+  vpc_id = aws_vpc.vpc_prod_us.id
 
   tags = {
     Name      = "internet_gateway"
