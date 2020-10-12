@@ -4,7 +4,7 @@ terraform {
     organization = "SalaryFinance"
 
     workspaces {
-      name = "US_migration_monolith"
+      name = "US_migration_monolith_prod"
     }
   }
 }
