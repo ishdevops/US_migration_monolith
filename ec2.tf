@@ -5,6 +5,7 @@ resource "aws_instance" "prod_sql_server" {
     vpc_security_group_ids      = [aws_security_group.sql_server_sg.id, aws_security_group.windows_rdp.id]
     associate_public_ip_address = "false"
     disable_api_termination     = "true"
+    iam_instance_profile        = "MSSQL_to_S3"
 
     tags = {
         name = "prod-sql-server"
