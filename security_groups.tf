@@ -73,7 +73,7 @@ resource "aws_security_group" "sql_server_sg" {
   }
 }
 
-resource "aws_security_group" "windows_rpd" {
+resource "aws_security_group" "windows_rdp" {
   name        = "windows_rdp"
   description = "Allow RDP"
   vpc_id      = aws_vpc.vpc_prod_us.id 
