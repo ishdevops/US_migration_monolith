@@ -12,7 +12,7 @@ resource "aws_instance" "prod_sql_server" {
 }
 
 resource "aws_instance" "jumpbox" {
-    ami                         = "ami-0b9482d3216554966"
+    ami                         = "ami-03cb8b08329ebbf12"
     instance_type               = "t3a.medium"
     subnet_id                   = aws_subnet.public_subnet_a.id
     vpc_security_group_ids      = [aws_security_group.jumpbox_sg.id, aws_security_group.sql_server_sg.id, aws_security_group.windows_rdp.id]
