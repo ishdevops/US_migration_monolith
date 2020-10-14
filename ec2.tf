@@ -25,17 +25,17 @@ resource "aws_instance" "jumpbox" {
     }
 }
 
-resource "aws_instance" "web_server" {
-  ami                         = "ami-0f8197a69b1645c8d"
-  count                       = 3 
-  instance_type               = "t3.large"
-  subnet_id                   = aws_subnet.private_subnet_a.id
-  vpc_security_group_ids      = [aws_security_group.sql_server_sg.id, aws_security_group.windows_rdp.id]
-  associate_public_ip_address = "false"
-  disable_api_termination     = "true"
-  iam_instance_profile        = "Monolaunch_Iam_Role"
+// resource "aws_instance" "web_server" {
+//   ami                         = "ami-0f8197a69b1645c8d"
+//   count                       = 3 
+//   instance_type               = "t3.large"
+//   subnet_id                   = aws_subnet.private_subnet_a.id
+//   vpc_security_group_ids      = [aws_security_group.sql_server_sg.id, aws_security_group.windows_rdp.id, aws_security_group.monolaunch_instance_sg.id]
+//   associate_public_ip_address = "false"
+//   disable_api_termination     = "true"
+//   iam_instance_profile        = "Monolaunch_Iam_Role"
 
-  tags = {
-    name = "web-server-${count.index}"
-  }
-}
+//   tags = {
+//     name = "web-server-${count.index}"
+//   }
+// }
