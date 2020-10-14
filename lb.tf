@@ -98,3 +98,46 @@ resource "aws_lb_target_group" "swarm_internal_tg" {
     matcher = "200-404"
   }
 }
+
+//add route 53 entries 
+
+// resource "aws_lb" "restricted_access_lb" {
+//   name               = "restricted-access-lb"
+//   internal           = false
+//   load_balancer_type = "application"
+//   security_groups    = [aws_security_group.swarm_node_sg.id, aws_security_group.swarm_internal_lb_sg.id]
+//   subnets            = [aws_subnet.public_subnet_b.id, aws_subnet.public_subnet_a.id]
+
+//   enable_deletion_protection = true
+
+// }
+
+// resource "aws_lb_listener" "https_swarm" {
+//   load_balancer_arn = aws_lb.swarm_internal_lb.arn
+//   port              = "443"
+//   protocol          = "HTTPS"
+//   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
+//   certificate_arn   = data.aws_acm_certificate.salary_finance.arn
+
+//   default_action {
+//     type             = "forward"
+//     target_group_arn = aws_lb_target_group.swarm_internal_tg.arn
+//   }
+// }
+
+// resource "aws_lb_target_group" "swarm_internal_tg" {
+//   name     = "swarm-internal-tg"
+//   port     = 443
+//   protocol = "HTTPS"
+//   vpc_id   = aws_vpc.vpc_prod_us.id
+
+//   health_check {
+//     path = "/"
+//     port = 80
+//     healthy_threshold = 5
+//     unhealthy_threshold = 2
+//     timeout = 5
+//     interval = 30
+//     matcher = "200-404"
+//   }
+// }
