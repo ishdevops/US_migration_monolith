@@ -208,6 +208,14 @@ resource "aws_security_group" "restricted_access_sg" {
   name        = "restricted_access_sg"
   description = "Security group for SF networks"
   vpc_id      = aws_vpc.vpc_prod_us.id 
+  
+  ingress {
+    description = "HTTPS and HTTP from SF Network"
+    from_port   = 80
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["114.143.76.226/32", "196.36.98.34/32", "196.28.46.170/32", "3.9.29.117/32", "4.251.180.56/32", "172.31.99.100/32", "18.130.69.215/32"]
+  }
 
   egress {
     from_port   = 0
@@ -223,11 +231,10 @@ resource "aws_security_group" "restricted_access_sg" {
 
 resource "aws_security_group_rule" "restricted_access_sg_self" {
   type = "ingress"
-  from_port = 80
-  to_port = 443
-  protocol = "tcp"
+  from_port = 0
+  to_port = 0
+  protocol = -1
   self = true
-  cidr_blocks = ["114.143.76.226/32", "196.36.98.34/32", "196.28.46.170/32", "3.9.29.117/32", "4.251.180.56/32", "172.31.99.100/32", "18.130.69.215/32"]
   security_group_id = aws_security_group.restricted_access_sg.id
 }
 

@@ -134,5 +134,9 @@ resource "aws_route" "nat_route" {
     depends_on = [
       aws_route_table.private_route_table,
     ]
+
+    lifecycle {
+      create_before_destroy = true
+    }
 }
 
