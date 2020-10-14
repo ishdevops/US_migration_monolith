@@ -36,7 +36,7 @@ resource "aws_instance" "web_server" {
   iam_instance_profile        = "Monolaunch_Iam_Role"
 
   tags = {
-    name = "web-server-${count.index}"
+    name = "web-server-${count.index + 1}"
   }
 }
 
