@@ -99,63 +99,92 @@ resource "aws_lb_target_group" "swarm_internal_tg" {
   }
 }
 
-//add route 53 entries 
+resource "aws_lb" "restricted_access_lb" {
+  name               = "restricted-access-lb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.swarm_node_sg.id, aws_security_group.monolaunch_instance_sg.id, aws_security_group.restricted_access_sg.id]
+  subnets            = [aws_subnet.public_subnet_b.id, aws_subnet.public_subnet_a.id]
 
-// resource "aws_lb" "restricted_access_lb" {
-//   name               = "restricted_access_lb"
-//   internal           = false
-//   load_balancer_type = "application"
-//   security_groups    = [aws_security_group.swarm_node_sg.id, aws_security_group.monolaunch_instance_sg.id, aws_security_group.restricted_access_sg.id]
-//   subnets            = [aws_subnet.public_subnet_b.id, aws_subnet.public_subnet_a.id]
+  enable_deletion_protection = true
 
-//   enable_deletion_protection = true
+}
 
-// }
+resource "aws_lb_listener" "http_restricted" {
+  load_balancer_arn = aws_lb.restricted_access_lb.arn
+  port              = "80"
+  protocol          = "HTTP"
 
-// resource "aws_lb_listener" "http_restricted" {
-//   load_balancer_arn = aws_lb.restricted_access_lb.arn
-//   port              = "80"
-//   protocol          = "HTTP"
+  default_action {
+    type = "redirect"
 
-//   default_action {
-//     type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
 
-//     redirect {
-//       port        = "443"
-//       protocol    = "HTTPS"
-//       status_code = "HTTP_301"
-//     }
-//   }
-// }
+resource "aws_lb_listener" "https_restricted" {
+  load_balancer_arn = aws_lb.restricted_access_lb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
+  certificate_arn   = data.aws_acm_certificate.salary_finance.arn
 
-// resource "aws_lb_listener" "https_restricted" {
-//   load_balancer_arn = aws_lb.restricted_access_lb.arn
-//   port              = "443"
-//   protocol          = "HTTPS"
-//   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-//   certificate_arn   = data.aws_acm_certificate.salary_finance.arn
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.restricted_access_tg.arn
+  }
+}
 
-//   default_action {
-//     type             = "forward"
-//     target_group_arn = aws_lb_target_group.restricted_access_tg.arn
-//   }
-// }
+resource "aws_lb_listener_rule" "host_based_routing" {
+  listener_arn = aws_lb_listener.https_restricted.arn
+  priority     = 99
 
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.swarm_restricted_access_tg.arn
+  }
 
+  condition {
+    host_header {
+      values = ["us-battasks.salaryfinance.club", "us-battasksapi.salaryfinance.club"]
+    }
+  }
+}
 
-// resource "aws_lb_target_group" "restricted_access_tg" {
-//   name     = "restricted_access_tg"
-//   port     = 443
-//   protocol = "HTTPS"
-//   vpc_id   = aws_vpc.vpc_prod_us.id
+  resource "aws_lb_target_group" "swarm_restricted_access_tg" {
+  name     = "swarm-restricted-access-tg"
+  port     = 443
+  protocol = "HTTPS"
+  vpc_id   = aws_vpc.vpc_prod_us.id
 
-//   health_check {
-//     path = "/"
-//     port = 80
-//     healthy_threshold = 5
-//     unhealthy_threshold = 2
-//     timeout = 5
-//     interval = 30
-//     matcher = "200-404"
-//   }
-// }
+  health_check {
+    path = "/"
+    port = 80
+    healthy_threshold = 5
+    unhealthy_threshold = 2
+    timeout = 5
+    interval = 30
+    matcher = "200-404"
+  }
+}
+
+resource "aws_lb_target_group" "restricted_access_tg" {
+  name     = "restricted-access-tg"
+  port     = 443
+  protocol = "HTTPS"
+  vpc_id   = aws_vpc.vpc_prod_us.id
+
+  health_check {
+    path = "/"
+    port = 80
+    healthy_threshold = 5
+    unhealthy_threshold = 2
+    timeout = 5
+    interval = 30
+    matcher = "200-404"
+  }
+}
