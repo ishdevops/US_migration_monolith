@@ -80,7 +80,7 @@ resource "aws_security_group" "mysql_sg" {
   ingress {
     from_port = 0
     to_port = 65535
-    protocol = "-1"
+    protocol = "tcp"
     self = true
   }
 
