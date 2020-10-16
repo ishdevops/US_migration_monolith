@@ -221,7 +221,7 @@ resource "aws_security_group" "swarm_internal_lb_sg" {
   ingress {
     from_port = 0
     to_port = 65535
-    protocol = "-1"
+    protocol = "tcp"
     self = true
   }
 
