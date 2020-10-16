@@ -52,6 +52,13 @@ resource "aws_security_group" "sql_server_sg" {
   name        = "sql_server_sg"
   description = "Allow SQL Server"
   vpc_id      = aws_vpc.vpc_prod_us.id 
+  
+  ingress {
+    from_port = 1433
+    to_port = 1433
+    protocol = "tcp"
+    self = true
+  }
 
   egress {
     from_port   = 0
@@ -65,20 +72,37 @@ resource "aws_security_group" "sql_server_sg" {
   }
 }
 
-resource "aws_security_group_rule" "sql_server_sg_self" {
-  type = "ingress"
-  from_port = 0
-  to_port = 0
-  protocol = -1
-  self = true
-  security_group_id = aws_security_group.sql_server_sg.id
-}
+resource "aws_security_group" "mysql_sg" {
+  name        = "mysql_sg"
+  description = "MySQL access to Prod"
+  vpc_id      = aws_vpc.vpc_prod_us.id 
 
+  ingress {
+    from_port = 0
+    to_port = 65535
+    protocol = "-1"
+    self = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
 resource "aws_security_group" "windows_rdp" {
   name        = "windows_rdp"
   description = "Allow RDP"
   vpc_id      = aws_vpc.vpc_prod_us.id 
+  
+  ingress {
+    from_port = 3889
+    to_port = 3889
+    protocol = "tcp"
+    self = true
+  }
 
   egress {
     from_port   = 0
@@ -92,13 +116,28 @@ resource "aws_security_group" "windows_rdp" {
   }
 }
 
-resource "aws_security_group_rule" "windows_rdp_self" {
-  type = "ingress"
-  from_port = 3889
-  to_port = 3889
-  protocol = "tcp"
-  self = true
-  security_group_id = aws_security_group.windows_rdp.id
+resource "aws_security_group" "ssh_sg" {
+  name        = "ssh_sg"
+  description = "Allow SSH"
+  vpc_id      = aws_vpc.vpc_prod_us.id 
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    self        = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "ssh"
+  }
 }
 
 resource "aws_security_group" "jumpbox_sg" {
@@ -131,6 +170,13 @@ resource "aws_security_group" "monolaunch_instance_sg" {
   description = "Access to Monolaunch Instances"
   vpc_id      = aws_vpc.vpc_prod_us.id 
 
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    self = true
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -143,19 +189,17 @@ resource "aws_security_group" "monolaunch_instance_sg" {
   }
 }
 
-resource "aws_security_group_rule" "monolaunch_instance_sg_self" {
-  type = "ingress"
-  from_port = 0
-  to_port = 0
-  protocol = -1
-  self = true
-  security_group_id = aws_security_group.monolaunch_instance_sg.id
-}
-
 resource "aws_security_group" "swarm_node_sg" {
   name        = "swarm_node_sg"
   description = "Security group for swarm node access"
   vpc_id      = aws_vpc.vpc_prod_us.id 
+
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    self = true
+  }
 
   egress {
     from_port   = 0
@@ -169,19 +213,17 @@ resource "aws_security_group" "swarm_node_sg" {
   }
 }
 
-resource "aws_security_group_rule" "swarm_node_sg_self" {
-  type = "ingress"
-  from_port = 0
-  to_port = 0
-  protocol = -1
-  self = true
-  security_group_id = aws_security_group.swarm_node_sg.id
-}
-
 resource "aws_security_group" "swarm_internal_lb_sg" {
   name        = "swarm_internal_lb_sg"
   description = "Security group for swarm node access"
   vpc_id      = aws_vpc.vpc_prod_us.id 
+
+  ingress {
+    from_port = 0
+    to_port = 65535
+    protocol = "-1"
+    self = true
+  }
 
   egress {
     from_port   = 0
@@ -193,15 +235,6 @@ resource "aws_security_group" "swarm_internal_lb_sg" {
   tags = {
     Name = "swarm_internal_lb_sg"
   }
-}
-
-resource "aws_security_group_rule" "swarm_internal_lb_sg_self" {
-  type = "ingress"
-  from_port = 0
-  to_port = 65535
-  protocol = -1
-  self = true
-  security_group_id = aws_security_group.swarm_internal_lb_sg.id
 }
 
 resource "aws_security_group" "restricted_access_sg" {
@@ -221,7 +254,7 @@ resource "aws_security_group" "restricted_access_sg" {
     description = "All traffic restricted access self"
     from_port   = 0
     to_port     = 0
-    protocol    = -1
+    protocol    = "-1"
     self = true
   }
 
@@ -236,13 +269,4 @@ resource "aws_security_group" "restricted_access_sg" {
     Name = "restricted_access_sg"
   }
 }
-
-// resource "aws_security_group_rule" "restricted_access_sg_self" {
-//   type = "ingress"
-//   from_port = 0
-//   to_port = 0
-//   protocol = -1
-//   self = true
-//   security_group_id = aws_security_group.restricted_access_sg.id
-// }
 

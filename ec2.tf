@@ -16,7 +16,7 @@ resource "aws_instance" "jumpbox" {
     ami                         = "ami-03cb8b08329ebbf12"
     instance_type               = "t3a.medium"
     subnet_id                   = aws_subnet.public_subnet_a.id
-    vpc_security_group_ids      = [aws_security_group.jumpbox_sg.id, aws_security_group.sql_server_sg.id, aws_security_group.windows_rdp.id]
+    vpc_security_group_ids      = [aws_security_group.jumpbox_sg.id, aws_security_group.sql_server_sg.id, aws_security_group.windows_rdp.id, aws_security_group.ssh_sg.id]
     associate_public_ip_address = "true"
     disable_api_termination     = "true"
 
@@ -30,13 +30,29 @@ resource "aws_instance" "web_server" {
   count                       = 3 
   instance_type               = "t3.large"
   subnet_id                   = aws_subnet.private_subnet_a.id
-  vpc_security_group_ids      = [aws_security_group.sql_server_sg.id, aws_security_group.windows_rdp.id, aws_security_group.monolaunch_instance_sg.id]
+  vpc_security_group_ids      = [aws_security_group.sql_server_sg.id, aws_security_group.windows_rdp.id, aws_security_group.monolaunch_instance_sg.id, aws_security_group.swarm_internal_lb_sg.id]
   associate_public_ip_address = "false"
   disable_api_termination     = "true"
   iam_instance_profile        = "Monolaunch_Iam_Role"
 
   tags = {
-    name = "web-server-${count.index + 1}"
+      name = "web-server-${count.index + 1}"
   }
 }
+   
+resource "aws_instance" "docker_server" {
+  ami                         = "ami-0649bfa29bbfc7d5e"
+  instance_type               = "t3.large"
+  subnet_id                   = aws_subnet.private_subnet_a.id
+  vpc_security_group_ids      = [aws_security_group.sql_server_sg.id, aws_security_group.ssh_sg.id, aws_security_group.swarm_node_sg.id, aws_security_group.mysql_sg.id]
+  associate_public_ip_address = "false"
+  disable_api_termination     = "true"
+  iam_instance_profile        = "AppServer"
+
+  tags = {
+    name = "docker_server"
+  }
+}
+
+
 
