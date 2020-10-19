@@ -98,8 +98,8 @@ resource "aws_security_group" "windows_rdp" {
   vpc_id      = aws_vpc.vpc_prod_us.id 
   
   ingress {
-    from_port = 3889
-    to_port = 3889
+    from_port = 3389
+    to_port = 3389
     protocol = "tcp"
     self = true
   }
